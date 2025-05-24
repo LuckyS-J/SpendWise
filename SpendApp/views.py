@@ -3,6 +3,9 @@ from .forms import SignUpForm, LoginForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from rest_framework.views import APIView, Response
+from .serializers import CategorySerializer, TransactionSerializer
+from .models import Category, Transaction
 
 # Create your views here.
 
@@ -37,6 +40,14 @@ def Register(request):
         form = SignUpForm()
     return render(request, 'SpendApp/register.html', {'form': form})
 
+
 @login_required
 def HomePage(request):
     return render(request, 'SpendApp/home-page.html')
+
+class CategoryListView(APIView):
+    def get(self, request):
+        categories = Category.objects.all()
+        serializer = CategorySerializer(categories, many=True)
+        return Response(serializer.data)
+        
