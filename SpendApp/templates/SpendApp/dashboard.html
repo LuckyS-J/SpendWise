@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+  <h1 class="mb-4">Dashboard</h1>
+
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Całkowite wydatki</h5>
+          <p class="display-6">{{ total_spent }} zł</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Wydatki według kategorii</h5>
+          <canvas id="spendingChart" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const byCategoryData = JSON.parse('{{ by_category_json|escapejs }}');
+
+  const labels = byCategoryData.map(item => item.category__name);
+  const values = byCategoryData.map(item => item.total);
+  const colors = byCategoryData.map(item => item.category__color);
+
+  const ctx = document.getElementById('spendingChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Wydatki',
+        data: values,
+        backgroundColor: colors,
+        borderWidth: 1
+      }]
+    }
+  });
+</script>
+
+{% endblock %}

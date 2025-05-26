@@ -11,4 +11,5 @@ urlpatterns = [
   path('api/transactions/', views.TransactionListView.as_view(), name='transactions'),
   path('api/transactions/<int:pk>/', views.TransactionDetailView.as_view(), name='transaction-detail'),
   path('api/summary/', views.TransactionSummaryView.as_view(), name='transaction-summary'),
+  path('dashboard/', views.DashboardView, name='Dashboard')
 ]

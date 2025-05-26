@@ -8,6 +8,7 @@ from .serializers import CategorySerializer, TransactionSerializer
 from .models import Category, Transaction
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Sum
+import json
 
 # Create your views here.
 
@@ -63,7 +64,7 @@ class CategoryListView(APIView):
 
 
 class TransactionListView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request):
         transactions = Transaction.objects.filter(
@@ -82,7 +83,7 @@ class TransactionListView(APIView):
 
 
 class TransactionDetailView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_object(self, pk, user):
         try:
@@ -117,7 +118,7 @@ class TransactionDetailView(APIView):
 
 
 class TransactionSummaryView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request):
         transactions = Transaction.objects.filter(user=request.user)
@@ -131,3 +132,33 @@ class TransactionSummaryView(APIView):
             'total_spent': total_spent,
             'by_category': by_category
         })
+
+
+
+
+@login_required
+def DashboardView(request):
+    transactions = Transaction.objects.filter(user=request.user)
+    total_spent = transactions.aggregate(Sum('amount'))['amount__sum'] or 0
+
+    by_category = (
+        transactions.values('category__name', 'category__color')
+        .annotate(total=Sum('amount'))
+        .order_by('-total')
+    )
+
+    # Zamiana Decimal na float
+    by_category_list = []
+    for item in by_category:
+        by_category_list.append({
+            'category__name': item['category__name'],
+            'category__color': item['category__color'],
+            'total': float(item['total']),
+        })
+
+    by_category_json = json.dumps(by_category_list)
+
+    return render(request, 'SpendApp/dashboard.html', {
+        'total_spent': total_spent,
+        'by_category_json': by_category_json,
+    })
