@@ -4,11 +4,13 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from rest_framework.views import APIView, Response
-from .serializers import CategorySerializer, TransactionSerializer
+from .serializers import CategorySerializer, TransactionSerializer, RegisterSerializer
 from .models import Category, Transaction
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.db.models import Sum
 import json
+from rest_framework import generics
+from rest_framework.permissions import AllowAny
 
 # Create your views here.
 
@@ -64,7 +66,7 @@ class CategoryListView(APIView):
 
 
 class TransactionListView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         transactions = Transaction.objects.filter(
@@ -83,7 +85,7 @@ class TransactionListView(APIView):
 
 
 class TransactionDetailView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_object(self, pk, user):
         try:
@@ -118,7 +120,7 @@ class TransactionDetailView(APIView):
 
 
 class TransactionSummaryView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         transactions = Transaction.objects.filter(user=request.user)
@@ -134,8 +136,6 @@ class TransactionSummaryView(APIView):
         })
 
 
-
-
 @login_required
 def DashboardView(request):
     transactions = Transaction.objects.filter(user=request.user)
@@ -147,7 +147,6 @@ def DashboardView(request):
         .order_by('-total')
     )
 
-    # Zamiana Decimal na float
     by_category_list = []
     for item in by_category:
         by_category_list.append({
@@ -162,3 +161,9 @@ def DashboardView(request):
         'total_spent': total_spent,
         'by_category_json': by_category_json,
     })
+
+
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    permission_classes = [AllowAny]
+    serializer_class = RegisterSerializer

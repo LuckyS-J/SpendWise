@@ -9,7 +9,7 @@
     <div class="col-md-4">
       <div class="card shadow-sm">
         <div class="card-body">
-          <h5 class="card-title">Całkowite wydatki</h5>
+          <h5 class="card-title">Total spendings</h5>
           <p class="display-6">{{ total_spent }} zł</p>
         </div>
       </div>
@@ -18,7 +18,7 @@
     <div class="col-md-8">
       <div class="card shadow-sm">
         <div class="card-body">
-          <h5 class="card-title">Wydatki według kategorii</h5>
+          <h5 class="card-title">Spendings as category</h5>
           <canvas id="spendingChart" height="200"></canvas>
         </div>
       </div>
@@ -40,7 +40,7 @@
     data: {
       labels: labels,
       datasets: [{
-        label: 'Wydatki',
+        label: 'Spendings',
         data: values,
         backgroundColor: colors,
         borderWidth: 1
