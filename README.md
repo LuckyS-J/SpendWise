@@ -34,3 +34,12 @@
 - Bootstrap 5
 - Chart.js
 
+---
+
+### 📌 Project Status
+✅ Completed MVP with full CRUD functionality, dashboard, and API.
+🔒 Archived for reference – being replaced by a new version focused on API design and deeper understanding of DRF.
+
+### 👨‍💻 Learning Note
+This project was built as part of my learning journey into Django and REST API development.
+Many features were implemented through self-study and with the help of ChatGPT to better understand best practices and architecture.
